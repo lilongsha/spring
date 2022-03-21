@@ -583,6 +583,12 @@ public abstract class AbstractEnvironment implements ConfigurableEnvironment {
 		return this.propertyResolver.resolvePlaceholders(text);
 	}
 
+	/**
+	 * 解析占位符
+	 * @param text 被解析的参数
+	 * @return 返回解析后的字符串
+	 * @throws IllegalArgumentException 非法参数
+	 */
 	@Override
 	public String resolveRequiredPlaceholders(String text) throws IllegalArgumentException {
 		return this.propertyResolver.resolveRequiredPlaceholders(text);

@@ -78,16 +78,19 @@ public class ClassPathXmlApplicationContext extends AbstractXmlApplicationContex
 	/**
 	 * Create a new ClassPathXmlApplicationContext, loading the definitions
 	 * from the given XML file and automatically refreshing the context.
+	 * 创建ClassPathXmlApplicationContext加载器，并指定单个配置文件，配置文件内包含了Bean的定义
 	 * @param configLocation resource location
 	 * @throws BeansException if context creation failed
 	 */
 	public ClassPathXmlApplicationContext(String configLocation) throws BeansException {
+		// 调用ClassPathXmlApplicationContext构造器
 		this(new String[] {configLocation}, true, null);
 	}
 
 	/**
 	 * Create a new ClassPathXmlApplicationContext, loading the definitions
 	 * from the given XML files and automatically refreshing the context.
+	 * 创建ClassPathXmlApplicationContext加载器，并指定多个配置文件，配置文件内包含了Bean的定义
 	 * @param configLocations array of resource locations
 	 * @throws BeansException if context creation failed
 	 */
@@ -99,6 +102,7 @@ public class ClassPathXmlApplicationContext extends AbstractXmlApplicationContex
 	 * Create a new ClassPathXmlApplicationContext with the given parent,
 	 * loading the definitions from the given XML files and automatically
 	 * refreshing the context.
+	 * 使用指定的ApplicationContext，创建ClassPathXmlApplicationContext加载器，并指定多个配置文件
 	 * @param configLocations array of resource locations
 	 * @param parent the parent context
 	 * @throws BeansException if context creation failed
@@ -112,6 +116,7 @@ public class ClassPathXmlApplicationContext extends AbstractXmlApplicationContex
 	/**
 	 * Create a new ClassPathXmlApplicationContext, loading the definitions
 	 * from the given XML files.
+	 * 创建ClassPathXmlApplicationContext加载器，指定多个配置文件与是否刷新
 	 * @param configLocations array of resource locations
 	 * @param refresh whether to automatically refresh the context,
 	 * loading all bean definitions and creating all singletons.
@@ -137,9 +142,14 @@ public class ClassPathXmlApplicationContext extends AbstractXmlApplicationContex
 	public ClassPathXmlApplicationContext(
 			String[] configLocations, boolean refresh, @Nullable ApplicationContext parent)
 			throws BeansException {
-
+		// 调用父类执行初始化？初始化了哪些？
+		// this -> AbstractXmlApplicationContext -> AbstractRefreshableConfigApplicationContext -> AbstractRefreshableApplicationContext \
+		// -> AbstractRefreshableApplicationContext -> AbstractApplicationContext.this() -> AbstractApplicationContext.getResourcePatternResolver() \
+		// 获取资源模式解析器(ResourcePatternResolver)
 		super(parent);
+		// 为当前加载的上下文，指定配置文件
 		setConfigLocations(configLocations);
+		// 是否刷新？刷新什么？默认为true
 		if (refresh) {
 			refresh();
 		}

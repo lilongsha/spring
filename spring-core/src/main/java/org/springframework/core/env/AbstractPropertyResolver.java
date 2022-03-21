@@ -202,11 +202,18 @@ public abstract class AbstractPropertyResolver implements ConfigurablePropertyRe
 		return doResolvePlaceholders(text, this.nonStrictHelper);
 	}
 
+	/**
+	 * 判断strictHelper是否为空，不为空调用解析，为空先createPlaceholderHelper初始化，再解析，返回解析后的字符串
+	 * @param text 待解析字符串
+	 * @return 返回doResolvePlaceholders解析后的字符串
+	 * @throws IllegalArgumentException 非法参数错误
+	 */
 	@Override
 	public String resolveRequiredPlaceholders(String text) throws IllegalArgumentException {
 		if (this.strictHelper == null) {
 			this.strictHelper = createPlaceholderHelper(false);
 		}
+		// 解析字符串
 		return doResolvePlaceholders(text, this.strictHelper);
 	}
 

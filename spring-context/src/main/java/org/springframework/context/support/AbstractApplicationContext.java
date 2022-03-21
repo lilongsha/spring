@@ -241,9 +241,11 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 
 
 	/**
+	 * 创建一个没有父级的新 AbstractApplicationContext。
 	 * Create a new AbstractApplicationContext with no parent.
 	 */
 	public AbstractApplicationContext() {
+		// 获取资源模式解析器
 		this.resourcePatternResolver = getResourcePatternResolver();
 	}
 
@@ -252,7 +254,9 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 	 * @param parent the parent context
 	 */
 	public AbstractApplicationContext(@Nullable ApplicationContext parent) {
+		// 创建一个没有父级新的 AbstractApplicationContext，并且获取资源模式解析器(ResourcePatternResolver)
 		this();
+		// 设置初始上下文值
 		setParent(parent);
 	}
 
@@ -543,45 +547,64 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 
 	@Override
 	public void refresh() throws BeansException, IllegalStateException {
+		// this.startupShutdownMonitor “刷新”和“销毁”的同步监视器 加锁，刷新与销毁不能被打断
 		synchronized (this.startupShutdownMonitor) {
+			// 判断是否在配置文件中指定spring.context.refresh参数？
 			StartupStep contextRefresh = this.applicationStartup.start("spring.context.refresh");
 
+			// 为刷新上下文以进行配置工作
 			// Prepare this context for refreshing.
 			prepareRefresh();
 
+			// 告诉子类刷新内部bean工厂
 			// Tell the subclass to refresh the internal bean factory.
+			// obtain获取 obtainFreshBeanFactory() 获取刷新bean工厂
 			ConfigurableListableBeanFactory beanFactory = obtainFreshBeanFactory();
 
+			// 为当前的上下文准备bean工厂
 			// Prepare the bean factory for use in this context.
 			prepareBeanFactory(beanFactory);
 
 			try {
+				// 允许在上下文子类中对bean工厂进行后置处理
 				// Allows post-processing of the bean factory in context subclasses.
 				postProcessBeanFactory(beanFactory);
 
+				// 判断是否在配置文件中指定了spring.context.beans.post-process参数？后置beanFactory处理器
 				StartupStep beanPostProcess = this.applicationStartup.start("spring.context.beans.post-process");
+
+				// 执行注册的后置beanFactory处理器
 				// Invoke factory processors registered as beans in the context.
 				invokeBeanFactoryPostProcessors(beanFactory);
 
+				// 注册拦截bean创建的拦截器
 				// Register bean processors that intercept bean creation.
 				registerBeanPostProcessors(beanFactory);
+
+				// bean后置拦截器结束？
 				beanPostProcess.end();
 
+				// 初始化消息资源？
 				// Initialize message source for this context.
 				initMessageSource();
 
+				// 初始化上下文事件多播器|广播器
 				// Initialize event multicaster for this context.
 				initApplicationEventMulticaster();
 
+				// 初始化特定上下文子类中的其他特殊 bean
 				// Initialize other special beans in specific context subclasses.
 				onRefresh();
 
+				// 检查bean监听器并注册
 				// Check for listener beans and register them.
 				registerListeners();
 
+				// 实例化所有剩余的（非懒加载）单例。
 				// Instantiate all remaining (non-lazy-init) singletons.
 				finishBeanFactoryInitialization(beanFactory);
 
+				// 最后一步：发布相应的事件。
 				// Last step: publish corresponding event.
 				finishRefresh();
 			}
@@ -603,6 +626,7 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 			}
 
 			finally {
+				// 重置 Spring 核心中的常见自省缓存，因为我们可能不再需要单例 bean 的元数据......
 				// Reset common introspection caches in Spring's core, since we
 				// might not ever need metadata for singleton beans anymore...
 				resetCommonCaches();
