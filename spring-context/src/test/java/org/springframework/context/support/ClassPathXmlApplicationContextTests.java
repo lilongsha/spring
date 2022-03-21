@@ -73,10 +73,19 @@ public class ClassPathXmlApplicationContextTests {
 	private static final String TEST_PROPERTIES = "test.properties";
 
 
+	/**
+	 * Spring ClassPathXmlApplicationContext IOC
+	 * 通过xml配置文件加载bean
+	 */
 	@Test
 	public void testSingleConfigLocation() {
+		// 解析xml加载Bean上下文
 		ClassPathXmlApplicationContext ctx = new ClassPathXmlApplicationContext(FQ_SIMPLE_CONTEXT);
+		// 判断xml上下文中是否包含someMessageSource
 		assertThat(ctx.containsBean("someMessageSource")).isTrue();
+		// 从上下文中获取bean
+		StaticMessageSource staticMessageSource = ctx.getBean(StaticMessageSource.class);
+		System.out.println(staticMessageSource.toString());
 		ctx.close();
 	}
 
