@@ -85,7 +85,9 @@ public class ClassPathXmlApplicationContextTests {
 		assertThat(ctx.containsBean("someMessageSource")).isTrue();
 		// 从上下文中获取bean
 		StaticMessageSource staticMessageSource = ctx.getBean(StaticMessageSource.class);
-		System.out.println(staticMessageSource.toString());
+		System.out.println(staticMessageSource);
+		StaticMessageSource bean = ctx.getBean(StaticMessageSource.class);
+		System.out.println(bean);
 		ctx.close();
 	}
 
